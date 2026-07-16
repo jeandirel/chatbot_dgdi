@@ -12,9 +12,13 @@ function Mark({ small = false }) {
   return <div className={`mark ${small ? 'small' : ''}`} aria-label="DGDI Gabon"><span>DGDI</span><i /></div>;
 }
 
+function OfficialLogo() {
+  return <img className="official-logo" src="/logo-edgdi.svg" alt="e-DGDI — République Gabonaise" />;
+}
+
 function Header({ page, onHome, onChat }) {
   return <header className="topbar">
-    <button className="brand-button" onClick={onHome} aria-label="Accueil"><Mark /></button>
+    <button className="brand-button" onClick={onHome} aria-label="Accueil e-DGDI"><OfficialLogo /></button>
     <nav aria-label="Navigation principale">
       <button>Services</button><button>Suivi</button>
       <button className={page === 'chat' ? 'active' : ''} onClick={onChat}>AI Chat</button>
