@@ -52,36 +52,37 @@ function Home({ startChat }) {
   </main>;
 }
 
+function EmbeddedAssistant({ context, onBack }) {
+  return <main className="assistant-page">
+    <div className="assistant-heading">
+      <div>
+        <span className="sovereign-badge">◈ SERVICE NUMÉRIQUE e-DGDI</span>
+        <h1>Assistant e-DGDI</h1>
+        {context && <p>Votre demande : <strong>{context}</strong></p>}
+      </div>
+      <button className="assistant-back" onClick={onBack}>← Retour à l’accueil</button>
+    </div>
+    <div className="assistant-frame-shell">
+      <iframe
+        title="Assistant conversationnel e-DGDI"
+        src="https://www.chatbase.co/chatbot-iframe/swl1m-D24lc9j8MQopU09"
+        width="100%"
+        height="100%"
+        frameBorder="0"
+        allow="microphone"
+      />
+    </div>
+  </main>;
+}
+
 export default function App() {
-  const [chatStatus, setChatStatus] = useState('');
-
-  const openAssistant = (context = '') => {
-    const chatbase = window.chatbase;
-
-    if (!chatbase) {
-      setChatStatus("L’assistant est en cours de chargement. Réessayez dans quelques secondes.");
-      return;
-    }
-
-    if (context && typeof chatbase.setInitialMessages === 'function') {
-      chatbase.setInitialMessages([
-        `Vous souhaitez être accompagné concernant : ${context}`,
-        'Décrivez votre situation afin que je vous indique la procédure, les pièces requises et les prochaines étapes.'
-      ]);
-    }
-
-    if (typeof chatbase.open === 'function') {
-      chatbase.open();
-    } else {
-      chatbase('open');
-    }
-
-    setChatStatus('Assistant e-DGDI ouvert.');
-  };
+  const [page, setPage] = useState('home');
+  const [context, setContext] = useState('');
+  const openAssistant = (question = '') => { setContext(question); setPage('chat'); };
+  const goHome = () => { setPage('home'); setContext(''); window.scrollTo({ top: 0, behavior: 'smooth' }); };
 
   return <div className="app">
-    <Header page="home" onHome={() => window.scrollTo({ top: 0, behavior: 'smooth' })} onChat={() => openAssistant()} />
-    <Home startChat={openAssistant} />
-    <p role="status" aria-live="polite" style={{ position: 'absolute', width: 1, height: 1, padding: 0, margin: -1, overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', border: 0 }}>{chatStatus}</p>
+    <Header page={page} onHome={goHome} onChat={() => openAssistant()} />
+    {page === 'home' ? <Home startChat={openAssistant} /> : <EmbeddedAssistant context={context} onBack={goHome} />}
   </div>;
 }
