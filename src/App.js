@@ -52,39 +52,7 @@ function Home({ startChat }) {
   </main>;
 }
 
-const demoAnswers = {
-  passeport: "Pour une demande de passeport biométrique, préparez une copie légalisée de l’acte de naissance, une pièce d’identité, des photos conformes et le justificatif de paiement. Présentez-vous ensuite au service DGDI compétent pour l’enrôlement biométrique. Les pièces et tarifs définitifs devront être confirmés par la DGDI.",
-  cnie: "Pour demander ou renouveler une CNIE, vous devrez constituer votre dossier d’état civil, fournir votre ancienne pièce en cas de renouvellement, puis effectuer l’enrôlement biométrique auprès du service habilité. Les exigences exactes seront confirmées par la DGDI.",
-  séjour: "La carte de séjour concerne les ressortissants étrangers autorisés à résider au Gabon. Le dossier comprend notamment le passeport, le visa ou titre d’entrée, les justificatifs de résidence et d’activité, ainsi que les pièces demandées selon votre situation.",
-  suivi: "Pour suivre votre demande, munissez-vous du numéro de dossier figurant sur votre récépissé. Dans la version finale, la vérification sécurisée permettra d’afficher les étapes : dossier soumis, vérifié, en production puis disponible.",
-  visa: "La procédure de visa dépend de votre nationalité, du motif et de la durée du séjour. Préparez au minimum un passeport valide, une photo, un justificatif de voyage et les documents liés au motif du séjour."
-};
-
-function getDemoAnswer(question) {
-  const text = question.toLowerCase();
-  if (text.includes('passeport')) return demoAnswers.passeport;
-  if (text.includes('cnie') || text.includes('identité')) return demoAnswers.cnie;
-  if (text.includes('séjour')) return demoAnswers.séjour;
-  if (text.includes('suiv') || text.includes('état') || text.includes('dossier')) return demoAnswers.suivi;
-  if (text.includes('visa')) return demoAnswers.visa;
-  return "Votre demande a bien été reçue. Pour ce démonstrateur, je peux vous accompagner sur le passeport biométrique, la CNIE, la carte de séjour, les visas et le suivi d’un dossier.";
-}
-
 function EmbeddedAssistant({ context, onBack }) {
-  const [value, setValue] = useState('');
-  const [messages, setMessages] = useState(() => context ? [
-    { role: 'user', text: context },
-    { role: 'assistant', text: getDemoAnswer(context) }
-  ] : [{ role: 'assistant', text: "Bonjour, je suis l’Assistant e-DGDI. Comment puis-je vous accompagner dans vos démarches aujourd’hui ?" }]);
-
-  const send = (event) => {
-    event.preventDefault();
-    const question = value.trim();
-    if (!question) return;
-    setMessages((current) => [...current, { role: 'user', text: question }, { role: 'assistant', text: getDemoAnswer(question) }]);
-    setValue('');
-  };
-
   return <main className="assistant-page">
     <div className="assistant-heading">
       <div>
@@ -94,17 +62,15 @@ function EmbeddedAssistant({ context, onBack }) {
       </div>
       <button className="assistant-back" onClick={onBack}>← Retour à l’accueil</button>
     </div>
-    <div className="assistant-frame-shell demo-chat">
-      <div className="demo-chat-header"><OfficialLogo /><div><strong>Assistant e-DGDI</strong><span><i /> Service disponible</span></div></div>
-      <div className="demo-messages">
-        {messages.map((message, index) => <div className={`demo-message ${message.role}`} key={index}>
-          {message.role === 'assistant' && <span className="demo-avatar">e</span>}
-          <div><p>{message.text}</p><small>{message.role === 'assistant' ? 'Assistant e-DGDI' : 'Vous'}</small></div>
-        </div>)}
-      </div>
-      <div className="demo-suggestions">{['Passeport biométrique', 'Demander une CNIE', 'Carte de séjour', 'Suivre mon dossier'].map((item) => <button key={item} onClick={() => { setMessages((current) => [...current, { role: 'user', text: item }, { role: 'assistant', text: getDemoAnswer(item) }]); }}>{item}</button>)}</div>
-      <form className="demo-input" onSubmit={send}><input value={value} onChange={(event) => setValue(event.target.value)} placeholder="Posez votre question sur une démarche DGDI…" aria-label="Votre message" /><button type="submit">Envoyer ➤</button></form>
-      <p className="demo-footer">Assistant e-DGDI • Direction Générale de la Documentation et de l’Immigration</p>
+    <div className="assistant-frame-shell">
+      <iframe
+        title="Assistant conversationnel e-DGDI"
+        src="https://www.chatbase.co/chatbot-iframe/swl1m-D24lc9j8MQopU09"
+        width="100%"
+        height="100%"
+        frameBorder="0"
+        allow="microphone"
+      />
     </div>
   </main>;
 }
