@@ -40,3 +40,6 @@
   .action-card p{font-size:12px}
   .trust{margin-top:10px;padding-top:8px}
 }
+
+.official-logo{display:block;width:230px;height:62px;object-fit:contain;object-position:left center}
+@media(max-width:720px){.official-logo{width:174px;height:48px}.topbar .brand-button{display:flex;align-items:center}}
